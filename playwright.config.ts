@@ -12,8 +12,8 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 30_000,
-  globalTimeout: 10 * 60 * 1000,
+  timeout: 40_000, //30 sec or 30000 seconds
+  globalTimeout: 10 * 60 * 1000, // 10 minutes
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -42,25 +42,25 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "setup",
+      name: "global-auth", // diğer browserlarda koşmadan once setup calışacak, SADECE *.setup.ts ile biten testleri çalıştırır
       testMatch: /.*\.setup\.ts/,
     },
     {
       name: "chromium",
-      dependencies: ["setup"],
+      dependencies: ["global-auth"], //
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
     },
-    // {
-    //   name: 'firefox',
-    //   dependencies: ["setup"],
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    /*   {
+      name: 'firefox',
+      dependencies: ["global-auth"],
+      use: { ...devices['Desktop Firefox'] },
+    },
 
-    // {
-    //   name: 'webkit',
-    //   dependencies: ["setup"],
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'webkit',
+      dependencies: ["global-auth"],
+      use: { ...devices['Desktop Safari'] },
+    }, */
 
     /* Test against mobile viewports. */
     // {
