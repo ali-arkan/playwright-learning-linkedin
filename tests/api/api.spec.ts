@@ -1,7 +1,6 @@
-import exp from "constants";
-import {test, expect} from "playwright/test"
+import { test, expect } from "@playwright/test";
 
-test("GET /products", async ({request}) => {
+test("GET /products", async ({ request }) => {
   // https://api.practicesoftwaretesting.com/products?page=1&between=price,1,100&is_rental=false
   const apiURL = "https://api.practicesoftwaretesting.com";
   const response = await request.get(apiURL + "/products");
