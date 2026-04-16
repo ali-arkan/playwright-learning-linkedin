@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Checkout challenge", async () => {
-  test.use({ storageState: ".auth/customer01.json" });
+  test.use({ storageState: "auth/customer02.json" });
 
   test.beforeEach(async ({ page }) => {
     await page.goto("https://practicesoftwaretesting.com");
@@ -15,14 +15,15 @@ test.describe("Checkout challenge", async () => {
     await page.getByTestId("proceed-1").click();
     await page.getByTestId("proceed-2").click();
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "2" })
+      page.locator(".step-indicator").filter({ hasText: "2" }),
     ).toHaveCSS("background-color", "rgb(51, 153, 51)");
-    await page.getByTestId("address").fill("123 Testing Way");
-    await page.getByTestId("city").fill("Sacramento");
-    await page.getByTestId("state").fill("California");
-    await page.getByTestId("country").fill("USA");
-    await page.getByTestId("postcode").fill("98765");
-    await page.getByTestId("proceed-3").click();
+    await page.getByLabel("Street").waitFor({ state: "visible" });
+    await page.getByLabel("Street").fill("123 Testing Way");
+    await page.getByLabel("City").fill("Sacramento");
+    await page.getByLabel("State").fill("California");
+    await page.getByLabel("Country").fill("USA");
+    await page.getByLabel("Postal code").fill("98765");
+    await page.getByRole("button", { name: "Proceed to checkout" }).click();
     await expect(page.getByTestId("finish")).toBeDisabled();
     await page.getByTestId("payment-method").selectOption("Buy Now Pay Later");
     await page
@@ -30,7 +31,7 @@ test.describe("Checkout challenge", async () => {
       .selectOption("6 Monthly Installments");
     await page.getByTestId("finish").click();
     await expect(page.locator(".help-block")).toHaveText(
-      "Payment was successful"
+      "Payment was successful",
     );
     headless
       ? await test.step("visual test", async () => {

@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 
+// https://practicesoftwaretesting.com/
 test("GET /products", async ({ request }) => {
   // https://api.practicesoftwaretesting.com/products?page=1&between=price,1,100&is_rental=false
   const apiURL = "https://api.practicesoftwaretesting.com";
@@ -17,7 +18,7 @@ test("POST /users/login", async ({ request }) => {
   const apiURL = "https://api.practicesoftwaretesting.com";
   const response = await request.post(apiURL + "/users/login", {
     data: {
-      email: "customer@practicesoftwaretesting.com",
+      email: "customer2@practicesoftwaretesting.com",
       password: "welcome01",
     },
   });
