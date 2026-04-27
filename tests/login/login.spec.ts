@@ -6,11 +6,11 @@ test("login without page object", async ({ page }) => {
   await page.locator('[data-test="nav-sign-in"]').click();
   await page
     .locator('[data-test="email"]')
-    .fill("customer@practicesoftwaretesting.com");
+    .fill("customer2@practicesoftwaretesting.com");
   await page.locator('[data-test="password"]').fill("welcome01");
   await page.locator('[data-test="login-submit"]').click();
   await expect(page.locator('[data-test="nav-menu"]')).toContainText(
-    "Jane Doe"
+    "Jack Howe",
   );
   await expect(page.locator('[data-test="page-title"]')).toContainText(
     "My account"
@@ -20,8 +20,8 @@ test("login without page object", async ({ page }) => {
 test("Login with page object", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
-  await loginPage.emailInput.fill("customer@practicesoftwaretesting.com");
+  await loginPage.emailInput.fill("customer2@practicesoftwaretesting.com");
   await loginPage.passwordInput.fill("welcome01");
   await loginPage.loginButton.click();
-  await expect(page.getByTestId("nav-menu")).toContainText("Jane Doe");
+  await expect(page.getByTestId("nav-menu")).toContainText("Jack Howe");
 });

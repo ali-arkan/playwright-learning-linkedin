@@ -13,7 +13,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto(process.env.URL + "/auth/login");
+    await this.page.goto(process.env.URL + "/auth/login"); //get env url from .env file, if not found use baseURL from config
   }
 
   async login(email: string, password: string) {

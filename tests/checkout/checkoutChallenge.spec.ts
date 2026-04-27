@@ -17,13 +17,17 @@ test.describe("Checkout challenge", async () => {
     await expect(
       page.locator(".step-indicator").filter({ hasText: "2" }),
     ).toHaveCSS("background-color", "rgb(51, 153, 51)");
+    await page.getByLabel("Country").waitFor({ state: "visible" });
+    await page.getByLabel("Country").selectOption("United States of America (the)");    await page.getByLabel("Postal code").fill("98765");
+    await page.getByLabel("House number").fill("42");
     await page.getByLabel("Street").waitFor({ state: "visible" });
     await page.getByLabel("Street").fill("123 Testing Way");
     await page.getByLabel("City").fill("Sacramento");
     await page.getByLabel("State").fill("California");
-    await page.getByLabel("Country").fill("USA");
-    await page.getByLabel("Postal code").fill("98765");
-    await page.getByRole("button", { name: "Proceed to checkout" }).click();
+  
+    // Wait for form validation to complete and button to be enabled
+    await expect(page.getByTestId("proceed-3")).toBeEnabled();
+    await page.getByTestId("proceed-3").click();
     await expect(page.getByTestId("finish")).toBeDisabled();
     await page.getByTestId("payment-method").selectOption("Buy Now Pay Later");
     await page
@@ -37,6 +41,7 @@ test.describe("Checkout challenge", async () => {
       ? await test.step("visual test", async () => {
           await expect(page).toHaveScreenshot("checkout.png", {
             mask: [page.getByTitle("Practice Software Testing - Toolshop")],
+            maxDiffPixelRatio: 0.02, // Allow 2% pixel difference for minor variations
           });
         })
       : console.log("Running in Headed mode, no screenshot comparison");

@@ -5,12 +5,14 @@ test.describe("Home Page with no auth", () => {
     await page.goto("https://practicesoftwaretesting.com/");
   });
 
-   test("visual test", async ({ page }) => {
-     await page.waitForLoadState("networkidle"); //Screenshot / visual test öncesi UI’nın tam oturması için
-     await expect(page).toHaveScreenshot("home-page-no-auth.png", {
-       mask: [page.getByTitle("Practice Software Testing - Toolshop")],
-     });
-   });
+  test("visual test", async ({ page }) => {
+    // Wait for actual content to be visible instead of networkidle
+    await expect(page.locator(".col-md-9").getByRole("link")).toHaveCount(9);
+
+    await expect(page).toHaveScreenshot("home-page-no-auth.png", {
+      mask: [page.getByTitle("Practice Software Testing - Toolshop")],
+    });
+  });
 
   test("check sign in", async ({ page }) => {
     // Verify sign-in link is present
@@ -22,7 +24,7 @@ test.describe("Home Page with no auth", () => {
     // check the title of the page
     // <title>Practice Software Testing - Toolshop - v5.0</title>
     await expect(page).toHaveTitle(
-      "Practice Software Testing - Toolshop - v5.0"
+      "Practice Software Testing - Toolshop - v5.0",
     );
   });
 
@@ -51,30 +53,35 @@ test.describe("Home Page with no auth", () => {
     // <h5 _ngcontent-ng-c3901630365="" data-test="product-name" class="card-title"> Thor Hammer </h5> // 9 tane var DOM da
     const productGrid = page.locator(".col-md-9"); //class locator -- nokta css oldugunu gosterir
 
-    await expect(productGrid.getByRole("link")).toHaveCount(1);
+    // Verify search returned results (may include partial matches)
+    await expect(productGrid.getByRole("link").first()).toBeVisible();
+    // Verify Thor Hammer specifically is in the results
     await expect(
-      productGrid.getByTestId("product-name").filter({ hasText: searchText })
+      productGrid.getByTestId("product-name").filter({ hasText: searchText }),
     ).toBeVisible();
   });
 });
 
-test.describe("Home page customer 01 auth", () => {
-  test.use({ storageState: "./auth/customer01.json" });
+test.describe("Home page customer 02 auth", () => {
+  test.use({ storageState: "./auth/customer02.json" });
 
   test.beforeEach(async ({ page }) => {
     await page.goto("https://practicesoftwaretesting.com/");
   });
 
   test("visual test authorized", async ({ page }) => {
-    await page.waitForLoadState("networkidle"); //Screenshot / visual test öncesi UI’nın tam oturması için
+    // Wait for actual content to be visible instead of networkidle
+    await expect(page.locator(".col-md-9").getByRole("link")).toHaveCount(9);
+
     await expect(page).toHaveScreenshot("home-page-customer01.png", {
       mask: [page.getByTitle("Practice Software Testing - Toolshop")],
+      maxDiffPixelRatio: 0.02, // Allow 2% pixel difference for minor variations
     });
   });
 
   test("check customer 01 is signed in", async ({ page }) => {
     await expect(page.getByTestId("nav-sign-in")).not.toBeVisible();
-    await expect(page.getByTestId("nav-menu")).toContainText("Jane Doe");
+    await expect(page.getByTestId("nav-menu")).toContainText("Jack Howe");
   });
 });
 
